@@ -1,0 +1,324 @@
+{
+  "code": "200",
+  "data": [
+    {
+      "childs": [
+        {
+          "childs": [
+            {
+              "childs": [
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "原料储备工序",
+                  "devicecode": "GX_000001",
+                  "id": 10,
+                  "locationid": "GX_000001",
+                  "parent": "GD_000001",
+                  "parentCode": "GD_000001",
+                  "treeId": "GX_000001"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "1#生料制备工序",
+                  "devicecode": "GX_000002",
+                  "id": 11,
+                  "locationid": "GX_000002",
+                  "parent": "GD_000001",
+                  "parentCode": "GD_000001",
+                  "treeId": "GX_000002"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "1#生料磨窑尾废气处理系统",
+                  "devicecode": "GX_000003",
+                  "id": 12,
+                  "locationid": "GX_000003",
+                  "parent": "GD_000001",
+                  "parentCode": "GD_000001",
+                  "treeId": "GX_000003"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "2#生料制备工序",
+                  "devicecode": "GX_000004",
+                  "id": 13,
+                  "locationid": "GX_000004",
+                  "parent": "GD_000001",
+                  "parentCode": "GD_000001",
+                  "treeId": "GX_000004"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "2#生料磨窑尾废气处理系统",
+                  "devicecode": "GX_000005",
+                  "id": 14,
+                  "locationid": "GX_000005",
+                  "parent": "GD_000001",
+                  "parentCode": "GD_000001",
+                  "treeId": "GX_000005"
+                }
+              ],
+              "craft": "工段",
+              "description": "生料制备工段",
+              "devicecode": "GD_000001",
+              "id": 5,
+              "locationid": "GD_000001",
+              "parent": "CJ_000001",
+              "parentCode": "CJ_000001",
+              "treeId": "GD_000001"
+            },
+            {
+              "childs": [
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "煤粉制备工序",
+                  "devicecode": "GX_000006",
+                  "id": 15,
+                  "locationid": "GX_000006",
+                  "parent": "GD_000002",
+                  "parentCode": "GD_000002",
+                  "treeId": "GX_000006"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "烧成工序",
+                  "devicecode": "GX_000007",
+                  "id": 16,
+                  "locationid": "GX_000007",
+                  "parent": "GD_000002",
+                  "parentCode": "GD_000002",
+                  "treeId": "GX_000007"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "循环水供水工序",
+                  "devicecode": "GX_000008",
+                  "id": 17,
+                  "locationid": "GX_000008",
+                  "parent": "GD_000002",
+                  "parentCode": "GD_000002",
+                  "treeId": "GX_000008"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "空压机供气工序",
+                  "devicecode": "GX_000009",
+                  "id": 18,
+                  "locationid": "GX_000009",
+                  "parent": "GD_000002",
+                  "parentCode": "GD_000002",
+                  "treeId": "GX_000009"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "氨水脱销工序",
+                  "devicecode": "GX_000010",
+                  "id": 19,
+                  "locationid": "GX_000010",
+                  "parent": "GD_000002",
+                  "parentCode": "GD_000002",
+                  "treeId": "GX_000010"
+                }
+              ],
+              "craft": "工段",
+              "description": "烧成工段",
+              "devicecode": "GD_000002",
+              "id": 7,
+              "locationid": "GD_000002",
+              "parent": "CJ_000001",
+              "parentCode": "CJ_000001",
+              "treeId": "GD_000002"
+            }
+          ],
+          "craft": "车间",
+          "description": "烧成车间",
+          "devicecode": "CJ_000001",
+          "id": 2,
+          "locationid": "CJ_000001",
+          "parent": "CX_000001",
+          "parentCode": "CX_000001",
+          "treeId": "CJ_000001"
+        },
+        {
+          "childs": [
+            {
+              "childs": [
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "混合材储备工序",
+                  "devicecode": "GX_000011",
+                  "id": 20,
+                  "locationid": "GX_000011",
+                  "parent": "GD_000003",
+                  "parentCode": "GD_000003",
+                  "treeId": "GX_000011"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "熟料输送工序",
+                  "devicecode": "GX_000012",
+                  "id": 21,
+                  "locationid": "GX_000012",
+                  "parent": "GD_000003",
+                  "parentCode": "GD_000003",
+                  "treeId": "GX_000012"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "水泥管磨制备工序",
+                  "devicecode": "GX_000013",
+                  "id": 72,
+                  "locationid": "GX_000013",
+                  "parent": "GD_000003",
+                  "parentCode": "GD_000003",
+                  "treeId": "GX_000013"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "水泥立磨制备工序",
+                  "devicecode": "GX_000014",
+                  "id": 73,
+                  "locationid": "GX_000014",
+                  "parent": "GD_000003",
+                  "parentCode": "GD_000003",
+                  "treeId": "GX_000014"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "清水池供水工序",
+                  "devicecode": "GX_000015",
+                  "id": 74,
+                  "locationid": "GX_000015",
+                  "parent": "GD_000003",
+                  "parentCode": "GD_000003",
+                  "treeId": "GX_000015"
+                }
+              ],
+              "craft": "工段",
+              "description": "水泥制备工段",
+              "devicecode": "GD_000003",
+              "id": 8,
+              "locationid": "GD_000003",
+              "parent": "CJ_000002",
+              "parentCode": "CJ_000002",
+              "treeId": "GD_000003"
+            },
+            {
+              "childs": [
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "水泥成品发放工序",
+                  "devicecode": "GX_000016",
+                  "id": 75,
+                  "locationid": "GX_000016",
+                  "parent": "GD_000004",
+                  "parentCode": "GD_000004",
+                  "treeId": "GX_000016"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "熟料散装发放工序",
+                  "devicecode": "GX_000017",
+                  "id": 76,
+                  "locationid": "GX_000017",
+                  "parent": "GD_000004",
+                  "parentCode": "GD_000004",
+                  "treeId": "GX_000017"
+                },
+                {
+                  "childs": [],
+                  "craft": "工序",
+                  "description": "污水处理工序",
+                  "devicecode": "GX_000018",
+                  "id": 77,
+                  "locationid": "GX_000018",
+                  "parent": "GD_000004",
+                  "parentCode": "GD_000004",
+                  "treeId": "GX_000018"
+                }
+              ],
+              "craft": "工段",
+              "description": "成品发放工段",
+              "devicecode": "GD_000004",
+              "id": 9,
+              "locationid": "GD_000004",
+              "parent": "CJ_000002",
+              "parentCode": "CJ_000002",
+              "treeId": "GD_000004"
+            }
+          ],
+          "craft": "车间",
+          "description": "水泥车间",
+          "devicecode": "CJ_000002",
+          "id": 3,
+          "locationid": "CJ_000002",
+          "parent": "CX_000001",
+          "parentCode": "CX_000001",
+          "treeId": "CJ_000002"
+        },
+        {
+          "childs": [],
+          "craft": "车间",
+          "description": "余热发电车间",
+          "devicecode": "CJ_000003",
+          "id": 4,
+          "locationid": "CJ_000003",
+          "parent": "CX_000001",
+          "parentCode": "CX_000001",
+          "treeId": "CJ_000003"
+        },
+        {
+          "childs": [
+            {
+              "childs": [],
+              "craft": "设备",
+              "description": "电动抓斗桥式起重机",
+              "devicecode": "291CA04",
+              "id": 1647,
+              "locationid": "SD_000001",
+              "parent": "CJ_000004",
+              "parentCode": "CJ_000004",
+              "treeId": "SD_000001"
+            }
+          ],
+          "craft": "车间",
+          "description": "测试车间",
+          "devicecode": "CJ_000004",
+          "id": 1763,
+          "locationid": "CJ_000004",
+          "parent": "CX_000001",
+          "parentCode": "CX_000001",
+          "treeId": "CJ_000004"
+        }
+      ],
+      "craft": "产线",
+      "description": "铜川尧柏万吨线",
+      "devicecode": "CX_000001",
+      "id": 1,
+      "locationid": "CX_000001",
+      "parent": "",
+      "parentCode": "null",
+      "treeId": "CX_000001"
+    }
+  ],
+  "failArgs": "",
+  "msg": "成功",
+  "resultExplain": ""
+}
