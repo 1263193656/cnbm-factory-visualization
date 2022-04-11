@@ -1993,4 +1993,8 @@ export default {
 .el-dialog__body {
  padding: 20px 20px !important;
 }
+.el-scrollbar__wrap {
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+}
 </style>
