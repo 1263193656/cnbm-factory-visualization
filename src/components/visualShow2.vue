@@ -72,19 +72,26 @@
       <div class="c-node-menu-item" @click.stop="doAction('删除')">删除</div>
       <div class="c-node-menu-item" @click.stop="doAction('编辑')">编辑</div>
       <div class="c-node-menu-item" @click.stop="doAction('变更节点')">变更节点</div>
+      <div class="c-node-menu-item" @click.stop="doAction('挂载设备')">挂载设备</div>
     </div>
     <el-dialog :title="deviceTitle" :visible.sync="isShowDevice" width="600">
       <div style="margin-bottom: 10px; text-align: left">
-        <span style="">
-          <el-input placeholder="搜索设备" v-model="searchDeviceContent" size="small" style="max-width: 250px; margin-left: 5px; left: 0">
+        <span>
+          <el-checkbox v-model="isAllDevicesChecked" size="small" border>全选</el-checkbox>
+        </span>
+        <span>
+          <el-input placeholder="搜索设备" v-model="searchDeviceContent" size="small" style="max-width: 250px; margin-left: 5px;">
             <el-button slot="append" icon="el-icon-search" @click="handleDeviceSearch"></el-button>
           </el-input>
         </span>
-        <span style="float: right">
+        <span v-show="isMountDevice" style="float: right">
+          <el-button style=" margin-right: 5px" size="small" type="primary" :disabled="!this.checkedDevices.length > 0" @click="handleMountDevice">挂载</el-button>
+        </span>
+        <span v-show="!isMountDevice" style="float: right">
           <el-button style=" margin-right: 5px" size="small" type="danger">删除</el-button>
         </span>
-        <span style="float: right">
-          <el-button style=" margin-right: 5px" size="small" type="primary" @click="isMovingDevice = true; isShowDevice = false">变更</el-button>
+        <span v-show="!isMountDevice" style="float: right">
+          <el-button style=" margin-right: 5px" size="small" type="primary" @click="isMovingDevice = true; isShowDevice = false;" :disabled="!this.checkedDevices.length > 0">变更</el-button>
         </span>
 
       </div>
@@ -176,10 +183,11 @@
       <el-pagination
           style="margin-top: 10px;text-align: center"
           background
-          layout="total, prev, pager, next"
+          layout="total, prev, pager, next, sizes"
           :current-page.sync="deviceCurrentPage"
           :pager-count="5"
-          :page-size="24"
+          :page-sizes="[12, 24, 48, 96]"
+          :page-size.sync="devicePageSize"
           :page-count="deviceTotalPages"
           :total="deviceTotalCount">
       </el-pagination>
@@ -336,10 +344,12 @@ export default {
       testData: {},
       treeData: {},
       selectModel: {},
+      isMountDevice: false, // 区分展示设备还是挂载设备
       deviceList:[],
       deviceCol1: [],
       deviceCol2: [],
       deviceCol3: [],
+      isAllDevicesChecked: false,
       cancelButtonDisabled: true,
       nodeTypeOptions: [
       {
@@ -370,6 +380,7 @@ export default {
       deviceCurrentPage: 1,
       deviceTotalPages: 1,
       deviceTotalCount: 0,
+      devicePageSize: 24,
       checkedDevices: [],
       g_loading: true,
       isMoving: false,
@@ -625,16 +636,16 @@ export default {
 
   },
   methods: {
-    test() {
-      console.log(this.$refs.seeksRelationGraph)
-      let rect = document.getElementById("r-pad").getBoundingClientRect();
-      //中心位置
-      let center = {
-        x: rect.left + (rect.right - rect.left) / 2,
-        y: rect.top + (rect.bottom - rect.top) / 2
-      }
-      this.$refs.seeksRelationGraph.zoom(-5 * 10 * 1, center)
-    },
+    // test() {
+    //   console.log(this.$refs.seeksRelationGraph)
+    //   let rect = document.getElementById("r-pad").getBoundingClientRect();
+    //   //中心位置
+    //   let center = {
+    //     x: rect.left + (rect.right - rect.left) / 2,
+    //     y: rect.top + (rect.bottom - rect.top) / 2
+    //   }
+    //   this.$refs.seeksRelationGraph.zoom(-5 * 10 * 1, center)
+    // },
     handleMenuExpand() {
       this.menuIsExpand = !this.menuIsExpand
       this.menuSpan = this.menuIsExpand?1:4
@@ -969,7 +980,40 @@ export default {
         }
         case "变更节点": {
           this.isMoving = true
+          this.$message('点击右上角按钮可取消操作')
           this.showAddjudge()
+          break
+        }
+        case "挂载设备": {
+          this.isMountDevice = true
+          this.$axios
+              .post(baseURL[1]+'/equ/cllocations/v1/mountedDevices',{
+                current: 1,
+                modelLogo: this.selectModel.modelLogo,
+                selectVal: "",
+                size: this.devicePageSize
+              })
+              .then(successResponse => {
+                this.deviceList = successResponse.data.data.records;
+                this.splitDeviceList()
+
+                // console.log('收到设备的页数1/');
+                // console.log(successResponse.data.data.pages)
+                // console.log("this.deviceTotalPages")
+                // console.log(this.deviceTotalPages)
+                this.deviceTotalPages = successResponse.data.data.pages
+                // console.log("this.deviceTotalPages")
+                // console.log(this.deviceTotalPages)
+                // console.log('收到设备的页数2/');
+                // console.log(successResponse.data.data.pages)
+
+                this.deviceCurrentPage = successResponse.data.data.current
+                this.deviceTotalCount = successResponse.data.data.total
+                this.deviceTitle = this.selectModel.label + '/可挂载设备'
+                this.isShowDevice = true
+              }).catch(failResponse => {
+            this.showMessage('网络错误！',failResponse,'error');
+          })
           break
         }
         case "详情": {
@@ -1273,36 +1317,67 @@ export default {
     handleNodeSearch() {
       this.$refs.seeksRelationGraph.focusNodeById(this.$refs.seeksRelationGraph.getNodes().find(node => node.data.description.includes(this.searchNodeContent) && node.data.craft === this.searchNodeCraft).id)
     },
-    handleDeviceSearch() {
+    handleMountDevice() {
       this.$axios
-          .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
-            current: 1,
-            parentLocationId: this.currentNode.id,
-            size:24,
-            orderby: true,
-            selectVal: this.searchDeviceContent
+          .post(baseURL[1]+'/equ/cllocations/v2/editLoctionnode',{
+            locationid: this.checkedDevices,
+            parentlocationid: this.currentNode.id,
+            parenttopicdesc: this.currentNode.data.topicdesc
           })
           .then(successResponse => {
-            this.deviceList = successResponse.data.data.records;
-            this.splitDeviceList()
-
-            console.log('收到设备的页数1/');
-            console.log(successResponse.data.data.pages)
-            console.log("this.deviceTotalPages")
-            console.log(this.deviceTotalPages)
-            this.deviceTotalPages = successResponse.data.data.pages
-            console.log("this.deviceTotalPages")
-            console.log(this.deviceTotalPages)
-            console.log('收到设备的页数2/');
-            console.log(successResponse.data.data.pages)
-
-            this.deviceCurrentPage = successResponse.data.data.current
-            this.deviceTotalCount = successResponse.data.data.total
-            this.deviceTitle = this.currentNode.data.topicdesc + '/设备'
-            this.isShowDevice = true
+            if(successResponse.data.code === "200"){
+              this.showMessage(successResponse.data.msg, this.checkedDevices[0]+" 等设备添加到 "+this.currentNode.data.description,'success')
+            } else {
+              this.showMessage('提示', successResponse.data.msg,'error')
+            }
           }).catch(failResponse => {
         this.showMessage('网络错误！',failResponse,'error');
       })
+    },
+    handleDeviceSearch() {
+      if(this.isMountDevice) {
+        this.$axios
+            .post(baseURL[1]+'/equ/cllocations/v1/mountedDevices',{
+              current: 1,
+              modelLogo: this.selectModel.modelLogo,
+              selectVal: this.searchDeviceContent,
+              size: this.devicePageSize
+            })
+            .then(successResponse => {
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
+              this.deviceTotalPages = successResponse.data.data.pages
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      } else {
+        this.$axios
+            .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
+              current: 1,
+              parentLocationId: this.currentNode.id,
+              size: this.devicePageSize,
+              orderby: true,
+              selectVal: this.searchDeviceContent
+            })
+            .then(successResponse => {
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
+              this.deviceTotalPages = successResponse.data.data.pages
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      }
+
+    },
+    checkAllDevices() {
+      this.checkedDevices.length = 0
+      for( let i=0; i<this.deviceList.length; i++) {
+        this.checkedDevices.push(this.deviceList[i].locationid)
+      }
     },
     onNodeClick(nodeObject, $event) {
       // console.log('onNodeClick:', nodeObject)
@@ -1369,6 +1444,7 @@ export default {
         }
       } else {
         // 设备列表
+        this.isMountDevice = false
         this.currentNode = nodeObject
         if(!this.isShowDevice) {
           if(this.hasDevice(this.currentNode.data.devicelogo)) {
@@ -1376,7 +1452,7 @@ export default {
                 .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
                   current: 1,
                   parentLocationId: this.currentNode.id,
-                  size:24,
+                  size: this.devicePageSize,
                   orderby: true,
                   selectVal: ''
                 })
@@ -1620,8 +1696,21 @@ export default {
 
       }
     },
+    isAllDevicesChecked(newVal, oldVal) {
+      if(newVal === true) {
+        this.checkAllDevices()
+      } else {
+        this.checkedDevices.length = 0
+      }
+    },
     isMovingDevice(newVal, oldVal) {
       if(newVal === true) {
+        this.$message('点击右上角按钮可取消操作')
+        this.$message({
+          showClose: true,
+          message: '请选择节点',
+          duration: 0
+        });
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.style.border = "3px solid rgb(50, 253, 236)"
         this.cancelButtonDisabled = false
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.children[1].children[0].style.boxShadow = 'rgba(46, 240, 217, 0.4) -5px 5px, rgba(46, 240, 217, 0.3) -10px 10px, rgba(46, 240, 217, 0.2) -15px 15px, rgba(46, 240, 217, 0.1) -20px 20px, rgba(46, 240, 217, 0.05) -25px 25px'
@@ -1631,12 +1720,14 @@ export default {
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.children[1].children[0].style.boxShadow = ''
 
       }
-},
+    },
     isShowDevice(newVal, oldVal) {
       if(newVal === false) {
-        console.log("隐藏watch")
         if(!this.isMovingDevice) this.checkedDevices.length = 0
         this.searchDeviceContent = ''
+        this.isAllDevicesChecked = false
+        this.devicePageSize = 24
+        this.deviceCurrentPage = 1
       }
     },
     agrCurrentPage(newVal, oldVal) {
@@ -1658,27 +1749,109 @@ export default {
             this.showMessage('网络错误！',failResponse,'error');
           })
     },
-    deviceCurrentPage(newVal, oldVal) {
-      this.$axios
-          .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
-            current: newVal+"",
-            parentLocationId: this.currentNode.id,
-            orderby: true,
-            size:24,
-            selectVal: this.searchDeviceContent
-          })
-          .then(successResponse => {
-            console.log('收到设备');
-            console.log(successResponse.data.data.records)
-            this.deviceList = successResponse.data.data.records;
-            this.splitDeviceList()
-            this.deviceTotalPages = successResponse.data.data.pages
-            this.deviceCurrentPage = successResponse.data.data.current
-            this.deviceTotalCount = successResponse.data.data.total
+    devicePageSize(newVal, oldVal) {
+      console.log("改变进来了")
+      if(this.isMountDevice) {
+        this.$axios
+            .post(baseURL[1]+'/equ/cllocations/v1/mountedDevices',{
+              current: this.deviceCurrentPage,
+              modelLogo: this.selectModel.modelLogo,
+              selectVal: this.searchDeviceContent,
+              size: newVal
+            })
+            .then(successResponse => {
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
 
-          }).catch(failResponse => {
-        this.showMessage('网络错误！',failResponse,'error');
-      })
+              // console.log('收到设备的页数1/');
+              // console.log(successResponse.data.data.pages)
+              // console.log("this.deviceTotalPages")
+              // console.log(this.deviceTotalPages)
+              this.deviceTotalPages = successResponse.data.data.pages
+              // console.log("this.deviceTotalPages")
+              // console.log(this.deviceTotalPages)
+              // console.log('收到设备的页数2/');
+              // console.log(successResponse.data.data.pages)
+
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      } else {
+        this.$axios
+            .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
+              current: this.deviceCurrentPage,
+              parentLocationId: this.currentNode.id,
+              orderby: true,
+              size: newVal,
+              selectVal: this.searchDeviceContent
+            })
+            .then(successResponse => {
+              // console.log('收到设备');
+              // console.log(successResponse.data.data.records)
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
+              this.deviceTotalPages = successResponse.data.data.pages
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      }
+    },
+    deviceCurrentPage(newVal, oldVal) {
+      if(this.isMountDevice) {
+        this.$axios
+            .post(baseURL[1]+'/equ/cllocations/v1/mountedDevices',{
+              current: newVal+"",
+              modelLogo: this.selectModel.modelLogo,
+              selectVal: this.searchDeviceContent,
+              size:this.devicePageSize
+            })
+            .then(successResponse => {
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
+
+              // console.log('收到设备的页数1/');
+              // console.log(successResponse.data.data.pages)
+              // console.log("this.deviceTotalPages")
+              // console.log(this.deviceTotalPages)
+              this.deviceTotalPages = successResponse.data.data.pages
+              // console.log("this.deviceTotalPages")
+              // console.log(this.deviceTotalPages)
+              // console.log('收到设备的页数2/');
+              // console.log(successResponse.data.data.pages)
+
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      } else {
+        this.$axios
+            .post(baseURL[1]+'/equ/cldevice/v1/queryCldeviceByparent',{
+              current: newVal+"",
+              parentLocationId: this.currentNode.id,
+              orderby: true,
+              size:this.devicePageSize,
+              selectVal: this.searchDeviceContent
+            })
+            .then(successResponse => {
+              // console.log('收到设备');
+              // console.log(successResponse.data.data.records)
+              this.deviceList = successResponse.data.data.records;
+              this.splitDeviceList()
+              this.deviceTotalPages = successResponse.data.data.pages
+              this.deviceCurrentPage = successResponse.data.data.current
+              this.deviceTotalCount = successResponse.data.data.total
+
+            }).catch(failResponse => {
+          this.showMessage('网络错误！',failResponse,'error');
+        })
+      }
+
     },
   },
   computed: {
@@ -1709,6 +1882,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+/* 节点动画效果 */
+/*.rel-node-peel {*/
+/*  transition: .2s;*/
+/*}*/
 .rel-node-shape-1 {
   padding: 0 0 !important;
 }
