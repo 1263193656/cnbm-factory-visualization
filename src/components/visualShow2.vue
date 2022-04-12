@@ -325,7 +325,7 @@
 </template>
 
 <script>
-import SeeksRelationGraph from 'relation-graph'
+import SeeksRelationGraph from 'relation-graph-cnbm'
 const baseURL = [
   'http://192.168.1.143:8890','http://192.168.1.143:38890','http://192.168.1.143:38892'
 ]

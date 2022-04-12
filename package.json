@@ -13,7 +13,7 @@
     "element-ui": "^2.15.6",
     "less": "^4.1.2",
     "less-loader": "^5.0.0",
-    "relation-graph": "^1.1.0",
+    "relation-graph-cnbm": "^1.1.2",
     "vue": "^2.6.11",
     "vue-orgchart": "^1.1.7",
     "vue-router": "^3.2.0",
