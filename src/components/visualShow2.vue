@@ -77,7 +77,7 @@
     <el-dialog :title="deviceTitle" :visible.sync="isShowDevice" width="600">
       <div style="margin-bottom: 10px; text-align: left">
         <span>
-          <el-checkbox v-model="isAllDevicesChecked" size="small" border>全选</el-checkbox>
+          <el-checkbox v-model="isAllDevicesChecked" size="small" border style=" margin-left: 5px;">全选</el-checkbox>
         </span>
         <span>
           <el-input placeholder="搜索设备" v-model="searchDeviceContent" size="small" style="max-width: 250px; margin-left: 5px;">
@@ -478,6 +478,7 @@ export default {
             'defaultNodeColor': 'rgba(0, 186, 189, 0)',
             "defaultNodeFontColor": "#393e46",
             "defaultNodeBorderColor": "#71c9ce",
+            "defaultExpandHolderPosition": "left",
             "defaultLineMarker": {
               "markerWidth": "0",
               "markerHeight": "0",
@@ -1706,11 +1707,11 @@ export default {
     isMovingDevice(newVal, oldVal) {
       if(newVal === true) {
         this.$message('点击右上角按钮可取消操作')
-        this.$message({
-          showClose: true,
-          message: '请选择节点',
-          duration: 0
-        });
+        // this.$message({
+        //   showClose: true,
+        //   message: '请选择节点',
+        //   duration: 0
+        // });
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.style.border = "3px solid rgb(50, 253, 236)"
         this.cancelButtonDisabled = false
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.children[1].children[0].style.boxShadow = 'rgba(46, 240, 217, 0.4) -5px 5px, rgba(46, 240, 217, 0.3) -10px 10px, rgba(46, 240, 217, 0.2) -15px 15px, rgba(46, 240, 217, 0.1) -20px 20px, rgba(46, 240, 217, 0.05) -25px 25px'
@@ -1750,7 +1751,6 @@ export default {
           })
     },
     devicePageSize(newVal, oldVal) {
-      console.log("改变进来了")
       if(this.isMountDevice) {
         this.$axios
             .post(baseURL[1]+'/equ/cllocations/v1/mountedDevices',{
