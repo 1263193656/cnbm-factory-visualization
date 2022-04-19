@@ -7,7 +7,11 @@
       <el-col :span="menuSpan" style="padding-right: 15px; transition: .3s">
         <div class="expand-btn" @click="handleMenuExpand"><i :class="{'el-icon-s-fold':!menuIsExpand,'el-icon-s-unfold':menuIsExpand }" style="height: 30px"></i></div>
         <div style="height:calc(100vh - 75px); background: #fdfdfe; border-radius: 10px; box-shadow:  0 8px 24px  rgba(149,157,165,0.2);">
-          <el-tree v-show="!menuIsExpand" class="treeMenu" :data="treeMenuData" @node-click="handleModelClick" @node-expand="handleModelExpand"></el-tree>
+          <el-tree v-show="!menuIsExpand" class="treeMenu" :data="treeMenuData" @node-click="handleModelClick" @node-expand="handleModelExpand">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <img :src="iconURLs.find(type => type.craft === '工厂').img" height="16"/><span> {{ node.label }}</span>
+            </span>
+          </el-tree>
           <div v-show="menuIsExpand">
             .<br>.<br>.<br>.<br>.<br>.
           </div>
@@ -17,7 +21,7 @@
         <div id="r-pad" v-loading="g_loading" @click="isShowNodeMenuPanel = false" ref="myPage"
              style="height:calc(100vh - 40px);">
           <el-tooltip class="item" effect="dark" content="取消操作" placement="left">
-            <el-button style="position: absolute; z-index: 99; top:20px; right: 20px;background: #71c9ce" type="primary" icon="el-icon-close" :disabled="cancelButtonDisabled" circle @click="resetGraph"/>
+            <el-button style="position: absolute; z-index: 99; top:20px; right: 20px;" type="primary" icon="el-icon-close" :disabled="cancelButtonDisabled" circle @click="resetGraph"/>
           </el-tooltip>
           <div style="position: absolute; z-index: 99; top:20px; margin-left: 20px; max-width: 300px;" >
             <el-input placeholder="搜索节点" v-model="searchNodeContent" class="input-with-select" size="small">
@@ -38,7 +42,7 @@
                 </div>
                 <el-badge :is-dot="hasDevice(node.data.devicelogo)" class="dot-item">
                   <div style="height: 64px; float: right; width: 120px">
-                    <div :style="{cursor: 'pointer',height:'32px', lineHeight: '32px', fontSize: '18px', color: 'white', backgroundColor: nodeBackGround(node.data.deep), borderRadius: '0 8px 0 0'}" @contextmenu.prevent="showNodeMenus(node, $event)">
+                    <div :style="{cursor: 'pointer',height:'32px', lineHeight: '32px', fontSize: '18px', color: 'white', background: nodeBackGround(node.data.deep), borderRadius: '0 8px 0 0'}" @contextmenu.prevent="showNodeMenus(node, $event)">
                       {{node.data.craft}}
                     </div>
                     <div :style="{cursor: 'pointer',height:'32px', lineHeight: '32px', fontSize: '14px', color: nodeBackGround(node.data.deep), fontWeight: 'bold', borderRadius: '0 0 8px 0', fontStyle: 'italic', overflow:'hidden', whiteSpace: 'nowrap',textOverflow: 'ellipsis', border: '2px solid ' + nodeBackGround(node.data.deep), background: 'rgba(209,232,228,0.38)',borderWidth: '0 0 0 2px'}" @contextmenu.prevent="showNodeMenus(node, $event)">
@@ -98,7 +102,7 @@
       <el-scrollbar style="height: 450px; text-align: left;">
         <el-row :gutter="10" style="overflow-x:hidden;margin-left: 0;margin-right: 0">
           <el-col :span="8">
-            <el-card v-for="device in deviceCol1" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid #3fb9b9':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
+            <el-card v-for="device in deviceCol1" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid rgba(51, 88, 227, 0.8)':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
               <div class="device-card-header" :class="{'device-card-header-checked':checkedDevices.indexOf(device.locationid) !== -1}">
                 <img src="../assets/device.png" style="height: 16px">
                 <el-tooltip effect="dark" :content="device.devicename" placement="top-start">
@@ -125,7 +129,7 @@
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card v-for="device in deviceCol2" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid #3fb9b9':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
+            <el-card v-for="device in deviceCol2" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid rgba(51, 88, 227, 0.8)':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
               <div class="device-card-header" :class="{'device-card-header-checked':checkedDevices.indexOf(device.locationid) !== -1}">
                 <img src="../assets/device.png" style="height: 16px">
                 <el-tooltip effect="dark" :content="device.devicename" placement="top-start">
@@ -152,7 +156,7 @@
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card v-for="device in deviceCol3" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid #3fb9b9':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
+            <el-card v-for="device in deviceCol3" :key="device.locationid" style="margin-bottom: 18px; border: none" shadow="hover" :body-style="{ padding: '0px', borderRadius: '5px' ,border: checkedDevices.indexOf(device.locationid) !== -1?'1px solid rgba(51, 88, 227, 0.8)':'1px solid #EBEEF5'}" @click.native="clickDevice(device.locationid, $event)">
               <div class="device-card-header" :class="{'device-card-header-checked':checkedDevices.indexOf(device.locationid) !== -1}">
                 <img src="../assets/device.png" style="height: 16px">
                 <el-tooltip effect="dark" :content="device.devicename" placement="top-start">
@@ -325,7 +329,7 @@
 </template>
 
 <script>
-import SeeksRelationGraph from 'relation-graph-cnbm'
+import SeeksRelationGraph from 'relation-graph'
 const baseURL = [
   'http://192.168.1.143:8890','http://192.168.1.143:38890','http://192.168.1.143:38892'
 ]
@@ -462,7 +466,38 @@ export default {
         disableDragNode: false,
         // 'backgrounImage': 'http://ai-mark.cn/images/ai-mark-desc.png',
         'backgrounImageNoRepeat': true,
-        'layouts': [
+        'layouts': [{
+          'label': '横向',
+          'layoutName': 'tree',
+          'layoutClassName': 'seeks-layout-center',
+          'defaultJunctionPoint': 'lr',
+          useLayoutStyleOptions: true,
+          'from': 'left',
+          // 通过这4个属性来调整 tree-层级距离&节点距离
+          'min_per_width': '200',
+          'max_per_width': '500',
+          'min_per_height': '100',
+          'max_per_height': '120',
+          'levelDistance': '', // 如果此选项有值，则优先级高于上面那4个选项
+
+          'defaultNodeShape': 1,
+          'defaultNodeWidth': '154',
+          'defaultLineShape': 4,
+          "defaultLineWidth": 3,
+          'defaultNodeBorderWidth': 0,
+          "defaultExpandHolderPosition": "right",
+          'defaultLineColor': 'rgba(51, 88, 227, 0.4)',
+          'defaultNodeColor': 'rgba(0, 186, 189, 0)',
+          "defaultNodeFontColor": "#393e46",
+          "defaultNodeBorderColor": "rgba(51, 88, 227, 1)",
+          "defaultLineMarker": {
+            "markerWidth": "0",
+            "markerHeight": "0",
+            "refX": 0,
+            "refY": 0,
+            "data": "M2,2 L10,6 L2,10 L6,6 L2,2"
+          },
+        },
           {
             'label': '中心',
             'layoutName': 'center',
@@ -474,10 +509,10 @@ export default {
             'defaultLineShape': 2,
             "defaultLineWidth": 3,
             'defaultNodeBorderWidth': 0,
-            'defaultLineColor': '#71c9ce',
+            'defaultLineColor': 'rgba(51, 88, 227, 0.4)',
             'defaultNodeColor': 'rgba(0, 186, 189, 0)',
             "defaultNodeFontColor": "#393e46",
-            "defaultNodeBorderColor": "#71c9ce",
+            "defaultNodeBorderColor": "rgba(51, 88, 227, 1)",
             "defaultExpandHolderPosition": "left",
             "defaultLineMarker": {
               "markerWidth": "0",
@@ -507,41 +542,10 @@ export default {
             "defaultLineWidth": 3,
             'defaultNodeBorderWidth': 0,
             "defaultExpandHolderPosition": "bottom",
-            'defaultLineColor': '#71c9ce',
+            'defaultLineColor': 'rgba(51, 88, 227, 0.4)',
             'defaultNodeColor': 'rgba(0, 186, 189, 0)',
             "defaultNodeFontColor": "#393e46",
-            "defaultNodeBorderColor": "#71c9ce",
-            "defaultLineMarker": {
-              "markerWidth": "0",
-              "markerHeight": "0",
-              "refX": 0,
-              "refY": 0,
-              "data": "M2,2 L10,6 L2,10 L6,6 L2,2"
-            },
-          },{
-            'label': '横向',
-            'layoutName': 'tree',
-            'layoutClassName': 'seeks-layout-center',
-            'defaultJunctionPoint': 'lr',
-            useLayoutStyleOptions: true,
-            'from': 'left',
-            // 通过这4个属性来调整 tree-层级距离&节点距离
-            'min_per_width': '200',
-            'max_per_width': '500',
-            'min_per_height': '100',
-            'max_per_height': '120',
-            'levelDistance': '', // 如果此选项有值，则优先级高于上面那4个选项
-
-            'defaultNodeShape': 1,
-            'defaultNodeWidth': '154',
-            'defaultLineShape': 4,
-            "defaultLineWidth": 3,
-            'defaultNodeBorderWidth': 0,
-            "defaultExpandHolderPosition": "right",
-            'defaultLineColor': '#71c9ce',
-            'defaultNodeColor': 'rgba(0, 186, 189, 0)',
-            "defaultNodeFontColor": "#393e46",
-            "defaultNodeBorderColor": "#71c9ce",
+            "defaultNodeBorderColor": "rgba(51, 88, 227, 1)",
             "defaultLineMarker": {
               "markerWidth": "0",
               "markerHeight": "0",
@@ -557,10 +561,10 @@ export default {
         'defaultLineShape': 4,
         "defaultLineWidth": 3,
         'defaultNodeBorderWidth': 0,
-        'defaultLineColor': '#71c9ce',
+        'defaultLineColor': 'rgba(51, 88, 227, 0.4)',
         'defaultNodeColor': 'rgba(0, 186, 189, 0)',
         "defaultNodeFontColor": "#393e46",
-        "defaultNodeBorderColor": "#71c9ce",
+        "defaultNodeBorderColor": "rgba(51, 88, 227, 1)",
         allowShowMiniToolBar: true,
         allowSwitchLineShape: true,
         allowShowMiniNameFilter: true,
@@ -735,6 +739,8 @@ export default {
 
       this.setExpandByDeep()
 
+      this.$refs.seeksRelationGraph.refresh()
+
       let rect = document.getElementById("r-pad").getBoundingClientRect();
       //中心位置
       let center = {
@@ -757,8 +763,8 @@ export default {
 
       function zoomTest() {
 
-        console.log("this")
-        console.log(this)
+        // console.log("this")
+        // console.log(this)
 
         that.$refs.seeksRelationGraph.zoom(-5 * 2 * 1, center)
       }
@@ -1687,7 +1693,7 @@ export default {
   watch: {
     isMoving(newVal, oldVal) {
       if(newVal === true) {
-        this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.style.border = "3px solid rgb(50, 253, 236)"
+        this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.style.border = "3px solid rgba(51, 88, 227, 0.8)"
         this.cancelButtonDisabled = false
         // this.$refs.seeksRelationGraph.getNodeById(this.currentNode.id).el.children[1].children[0].style.boxShadow = 'rgba(46, 240, 217, 0.4) -5px 5px, rgba(46, 240, 217, 0.3) -10px 10px, rgba(46, 240, 217, 0.2) -15px 15px, rgba(46, 240, 217, 0.1) -20px 20px, rgba(46, 240, 217, 0.05) -25px 25px'
       } else {
@@ -1857,21 +1863,38 @@ export default {
   computed: {
     nodeBackGround(){
       return function (deep) {
+        // switch (deep) {
+        //   case 1:
+        //     return "rgba(51, 88, 227, 1)"
+        //   case 2:
+        //     return "rgba(51, 88, 227, 0.8)"
+        //   case 3:
+        //     return "rgba(51, 88, 227, 0.6)"
+        //   case 4:
+        //     return "rgba(51, 88, 227, 0.4)"
+        //   case 5:
+        //     return "rgba(51, 88, 227, 0.3)"
+        //   case 6:
+        //     return "rgba(51, 88, 227, 0.2)"
+        //   default:
+        //     return "rgba(51, 88, 227, 0.1)"
+        //
+        // }
         switch (deep) {
           case 1:
-            return "#3aa7a7"
+            return "rgba(51, 88, 227, 1)"
           case 2:
-            return "#52b8b8"
+            return "rgba(51, 88, 227, 1)"
           case 3:
-            return "#6ccbcb"
+            return "rgba(51, 88, 227, 1)"
           case 4:
-            return "#94e2e2"
+            return "rgba(51, 88, 227, 1)"
           case 5:
-            return "#7ed8e2"
+            return "rgba(51, 88, 227, 1)"
           case 6:
-            return "#3095a1"
+            return "rgba(51, 88, 227, 1)"
           default:
-            return "#04938e"
+            return "rgba(51, 88, 227, 1)"
 
         }
       }
@@ -1890,10 +1913,10 @@ export default {
   padding: 0 0 !important;
 }
 .c-collapsed {
-  background-color: #76bebe !important;
+  background-color: rgba(51, 88, 227, 0.4) !important;
 }
 .c-expanded {
-  background-color: #76bebe !important;
+  background-color: rgba(51, 88, 227, 0.4) !important;
 }
 .node-shadow {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
@@ -1903,7 +1926,7 @@ export default {
 }
 .c-node-menu-item:hover{
   border-radius: 3px;
-  background-color: #6ccbcb;
+  background-color: rgba(51, 88, 227, 0.4);
   color: #ffffff;
   transition: .1s;
 }
@@ -1930,7 +1953,7 @@ export default {
   margin-bottom: 10px;
 }
 .device-checked {
-  background: #42b983;
+  background: rgba(51, 88, 227, 0.4);
 }
 .clearfix:before,
 .clearfix:after {
@@ -1961,7 +1984,7 @@ export default {
   /*margin-right: 40px;*/
 }
 .device-card-header-checked {
-  background : #3fb9b9;
+  background : rgba(51, 88, 227, 0.8);
   color : white;
   transition: .2s;
 }
